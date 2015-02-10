@@ -27,7 +27,7 @@ class WC_PF_Loader extends \awis_wc_pf\inc\Plugin_Loader
      */
     public function deactivation()
     {
-        return;
+//        return;
     }
 }
 
