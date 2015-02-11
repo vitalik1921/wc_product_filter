@@ -54,7 +54,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
             }
         }
 
-        add_filter( 'loop_shop_post_in', array( WC()->query, 'layered_nav_query' ) );
+        add_filter('loop_shop_post_in', array(WC()->query, 'layered_nav_query'));
     }
 
     /**
@@ -127,7 +127,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
             }
 
             //we are getting taxonomy terms
-            if ($terms = get_terms('pa_'.$taxonomy, $get_terms_args)) {
+            if ($terms = get_terms('pa_' . $taxonomy, $get_terms_args)) {
 
                 foreach ($terms as $term) {
 
@@ -136,96 +136,96 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
 
                     //we are checking cache, if its empty then we calc objects in term and set temporary value
                     if (false === ($_products_in_term = get_transient($transient_name))) {
-                        $_products_in_term = get_objects_in_term($term->term_id, 'pa_'.$taxonomy);
+                        $_products_in_term = get_objects_in_term($term->term_id, 'pa_' . $taxonomy);
                         set_transient($transient_name, $_products_in_term);
                     }
 
                     //define query type
-                    $query_type = (isset($_chosen_attributes['pa_'.$taxonomy]['query_type']) ? $_chosen_attributes['pa_'.$taxonomy]['query_type'] : 'and');
+                    $query_type = (isset($_chosen_attributes['pa_' . $taxonomy]['query_type']) ? $_chosen_attributes['pa_' . $taxonomy]['query_type'] : 'and');
 
                     //get count of product using current filters
                     // If this is an AND query, only show options with count > 0
-                    if ( $query_type == 'and' ) {
-                        $count = sizeof( array_intersect( $_products_in_term, WC()->query->filtered_product_ids ) );
+                    if ($query_type == 'and') {
+                        $count = sizeof(array_intersect($_products_in_term, WC()->query->filtered_product_ids));
                         // If this is an OR query, show all options so search can be expanded
                     } else {
-                        $count = sizeof( array_intersect( $_products_in_term, WC()->query->unfiltered_product_ids ) );
+                        $count = sizeof(array_intersect($_products_in_term, WC()->query->unfiltered_product_ids));
                     }
 
                     $arg = 'filter_' . $taxonomy;
 
-                    $current_filter = ( isset( $_GET[ $arg ] ) ) ? explode( ',', $_GET[ $arg ] ) : array();
+                    $current_filter = (isset($_GET[$arg])) ? explode(',', $_GET[$arg]) : array();
 
-                    if ( ! is_array( $current_filter ) )
+                    if (!is_array($current_filter))
                         $current_filter = array();
 
-                    $current_filter = array_map( 'esc_attr', $current_filter );
+                    $current_filter = array_map('esc_attr', $current_filter);
 
-                    if ( ! in_array( $term->term_id, $current_filter ) )
+                    if (!in_array($term->term_id, $current_filter))
                         $current_filter[] = $term->term_id;
 
                     // Base Link decided by current page
-                    if ( defined( 'SHOP_IS_ON_FRONT' ) ) {
+                    if (defined('SHOP_IS_ON_FRONT')) {
                         $link = home_url();
-                    } elseif ( is_post_type_archive( 'product' ) || is_page( wc_get_page_id('shop') ) ) {
-                        $link = get_post_type_archive_link( 'product' );
+                    } elseif (is_post_type_archive('product') || is_page(wc_get_page_id('shop'))) {
+                        $link = get_post_type_archive_link('product');
                     } else {
-                        $link = get_term_link( get_query_var('term'), get_query_var('taxonomy') );
+                        $link = get_term_link(get_query_var('term'), get_query_var('taxonomy'));
                     }
 
                     // All current filters
-                    if ( $_chosen_attributes ) {
-                        foreach ( $_chosen_attributes as $name => $data ) {
-                            if ( $name !== 'pa_'.$taxonomy ) {
+                    if ($_chosen_attributes) {
+                        foreach ($_chosen_attributes as $name => $data) {
+                            if ($name !== 'pa_' . $taxonomy) {
 
                                 // Exclude query arg for current term archive term
-                                while ( in_array( $current_term, $data['terms'] ) ) {
-                                    $key = array_search( $current_term, $data );
-                                    unset( $data['terms'][$key] );
+                                while (in_array($current_term, $data['terms'])) {
+                                    $key = array_search($current_term, $data);
+                                    unset($data['terms'][$key]);
                                 }
 
                                 // Remove pa_ and sanitize
-                                $filter_name = sanitize_title( str_replace( 'pa_', '', $name ) );
+                                $filter_name = sanitize_title(str_replace('pa_', '', $name));
 
-                                if ( ! empty( $data['terms'] ) )
-                                    $link = add_query_arg( 'filter_' . $filter_name, implode( ',', $data['terms'] ), $link );
+                                if (!empty($data['terms']))
+                                    $link = add_query_arg('filter_' . $filter_name, implode(',', $data['terms']), $link);
 
-                                if ( $data['query_type'] == 'or' )
-                                    $link = add_query_arg( 'query_type_' . $filter_name, 'or', $link );
+                                if ($data['query_type'] == 'or')
+                                    $link = add_query_arg('query_type_' . $filter_name, 'or', $link);
                             }
                         }
                     }
 
                     // Orderby
-                    if ( isset( $_GET['orderby'] ) )
-                        $link = add_query_arg( 'orderby', $_GET['orderby'], $link );
+                    if (isset($_GET['orderby']))
+                        $link = add_query_arg('orderby', $_GET['orderby'], $link);
 
                     // Current Filter
-                    if ( isset( $_chosen_attributes[ 'pa_'.$taxonomy ] ) && is_array( $_chosen_attributes[ 'pa_'.$taxonomy ]['terms'] ) && in_array( $term->term_id, $_chosen_attributes[ 'pa_'.$taxonomy ]['terms'] ) ) {
+                    if (isset($_chosen_attributes['pa_' . $taxonomy]) && is_array($_chosen_attributes['pa_' . $taxonomy]['terms']) && in_array($term->term_id, $_chosen_attributes['pa_' . $taxonomy]['terms'])) {
 
                         $class = 'class="chosen"';
                         // Remove this term is $current_filter has more than 1 term filtered
-                        if ( sizeof( $current_filter ) > 1 ) {
-                            $current_filter_without_this = array_diff( $current_filter, array( $term->term_id ) );
-                            $link = add_query_arg( $arg, implode( ',', $current_filter_without_this ), $link );
+                        if (sizeof($current_filter) > 1) {
+                            $current_filter_without_this = array_diff($current_filter, array($term->term_id));
+                            $link = add_query_arg($arg, implode(',', $current_filter_without_this), $link);
                         }
 
                     } else {
                         $class = '';
-                        $link = add_query_arg( $arg, implode( ',', $current_filter ), $link );
+                        $link = add_query_arg($arg, implode(',', $current_filter), $link);
                     }
 
                     // Search Arg
-                    if ( get_search_query() )
-                        $link = add_query_arg( 's', get_search_query(), $link );
+                    if (get_search_query())
+                        $link = add_query_arg('s', get_search_query(), $link);
 
                     // Post Type Arg
-                    if ( isset( $_GET['post_type'] ) )
-                        $link = add_query_arg( 'post_type', $_GET['post_type'], $link );
+                    if (isset($_GET['post_type']))
+                        $link = add_query_arg('post_type', $_GET['post_type'], $link);
 
                     // Query type Arg
-                    if ( $query_type == 'or' && ! ( sizeof( $current_filter ) == 1 && isset( $_chosen_attributes[ 'pa_'.$taxonomy ]['terms'] ) && is_array( $_chosen_attributes[ 'pa_'.$taxonomy ]['terms'] ) && in_array( $term->term_id, $_chosen_attributes[ 'pa_'.$taxonomy ]['terms'] ) ) )
-                        $link = add_query_arg( 'query_type_' . $taxonomy, 'or', $link );
+                    if ($query_type == 'or' && !(sizeof($current_filter) == 1 && isset($_chosen_attributes['pa_' . $taxonomy]['terms']) && is_array($_chosen_attributes['pa_' . $taxonomy]['terms']) && in_array($term->term_id, $_chosen_attributes['pa_' . $taxonomy]['terms'])))
+                        $link = add_query_arg('query_type_' . $taxonomy, 'or', $link);
 
 
                     $result .= "<li data-count='$count' $class><a href='$link'>{$term->name}</a></li>";
