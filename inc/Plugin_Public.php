@@ -13,9 +13,6 @@ abstract class Plugin_Public
 
         //add plugin styles/scripts
         add_action( 'admin_enqueue_scripts', array($this, 'add_enqueue_scripts'));
-
-        //add admin menu items
-        add_action('admin_menu', array($this, 'add_admin_items'));
     }
 
     /**
@@ -24,9 +21,4 @@ abstract class Plugin_Public
      */
     abstract function add_enqueue_scripts();
 
-    /**
-     * Add admin menu items
-     * @return mixed
-     */
-    abstract function add_admin_items();
 }
