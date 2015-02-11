@@ -87,10 +87,8 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
         if (!is_post_type_archive('product') && !is_tax(get_object_taxonomies('product')))
             return;
 
-        //we get current taxonomy and term id
+        //we are getting current taxonomy
         $current_term = is_tax() ? get_queried_object()->term_id : '';
-        $current_tax = is_tax() ? get_queried_object()->taxonomy : '';
-
 
         //we are going to store results
         $result = '';
@@ -129,28 +127,30 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
             }
 
             //we are getting taxonomy terms
-            if ($terms = get_terms("pa_" . $taxonomy, $get_terms_args)) {
+            if ($terms = get_terms('pa_'.$taxonomy, $get_terms_args)) {
 
                 foreach ($terms as $term) {
-
-                    $found = false;
 
                     //get count based on current view - uses transients
                     $transient_name = 'wc_ln_count_' . md5(sanitize_key($taxonomy) . sanitize_key($term->term_taxonomy_id));
 
                     //we are checking cache, if its empty then we calc objects in term and set temporary value
                     if (false === ($_products_in_term = get_transient($transient_name))) {
-                        $_products_in_term = get_objects_in_term($term->term_id, $taxonomy);
+                        $_products_in_term = get_objects_in_term($term->term_id, 'pa_'.$taxonomy);
                         set_transient($transient_name, $_products_in_term);
                     }
 
                     //define query type
-                    $query_type = (isset($_chosen_attributes[$taxonomy]['query_type']) ? $_chosen_attributes[$taxonomy]['query_type'] : 'and');
+                    $query_type = (isset($_chosen_attributes['pa_'.$taxonomy]['query_type']) ? $_chosen_attributes['pa_'.$taxonomy]['query_type'] : 'and');
 
                     //get count of product using current filters
-                    $count = sizeof( array_intersect( $_products_in_term, WC()->query->unfiltered_product_ids ) );
-                    if ( $count > 0 )
-                        $found = true;
+                    // If this is an AND query, only show options with count > 0
+                    if ( $query_type == 'and' ) {
+                        $count = sizeof( array_intersect( $_products_in_term, WC()->query->filtered_product_ids ) );
+                        // If this is an OR query, show all options so search can be expanded
+                    } else {
+                        $count = sizeof( array_intersect( $_products_in_term, WC()->query->unfiltered_product_ids ) );
+                    }
 
                     $arg = 'filter_' . $taxonomy;
 
@@ -176,7 +176,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                     // All current filters
                     if ( $_chosen_attributes ) {
                         foreach ( $_chosen_attributes as $name => $data ) {
-                            if ( $name !== $taxonomy ) {
+                            if ( $name !== 'pa_'.$taxonomy ) {
 
                                 // Exclude query arg for current term archive term
                                 while ( in_array( $current_term, $data['terms'] ) ) {
@@ -201,10 +201,9 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                         $link = add_query_arg( 'orderby', $_GET['orderby'], $link );
 
                     // Current Filter
-                    if ( isset( $_chosen_attributes[ $taxonomy ] ) && is_array( $_chosen_attributes[ $taxonomy ]['terms'] ) && in_array( $term->term_id, $_chosen_attributes[ $taxonomy ]['terms'] ) ) {
+                    if ( isset( $_chosen_attributes[ 'pa_'.$taxonomy ] ) && is_array( $_chosen_attributes[ 'pa_'.$taxonomy ]['terms'] ) && in_array( $term->term_id, $_chosen_attributes[ 'pa_'.$taxonomy ]['terms'] ) ) {
 
                         $class = 'class="chosen"';
-
                         // Remove this term is $current_filter has more than 1 term filtered
                         if ( sizeof( $current_filter ) > 1 ) {
                             $current_filter_without_this = array_diff( $current_filter, array( $term->term_id ) );
@@ -214,7 +213,6 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                     } else {
                         $class = '';
                         $link = add_query_arg( $arg, implode( ',', $current_filter ), $link );
-
                     }
 
                     // Search Arg
@@ -226,11 +224,11 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                         $link = add_query_arg( 'post_type', $_GET['post_type'], $link );
 
                     // Query type Arg
-                    if ( $query_type == 'or' && ! ( sizeof( $current_filter ) == 1 && isset( $_chosen_attributes[ $taxonomy ]['terms'] ) && is_array( $_chosen_attributes[ $taxonomy ]['terms'] ) && in_array( $term->term_id, $_chosen_attributes[ $taxonomy ]['terms'] ) ) )
+                    if ( $query_type == 'or' && ! ( sizeof( $current_filter ) == 1 && isset( $_chosen_attributes[ 'pa_'.$taxonomy ]['terms'] ) && is_array( $_chosen_attributes[ 'pa_'.$taxonomy ]['terms'] ) && in_array( $term->term_id, $_chosen_attributes[ 'pa_'.$taxonomy ]['terms'] ) ) )
                         $link = add_query_arg( 'query_type_' . $taxonomy, 'or', $link );
 
 
-                    $result .= "<li><a href='$link'>{$term->name}</a></li>";
+                    $result .= "<li data-count='$count' $class><a href='$link'>{$term->name}</a></li>";
                 }
             }
         }
