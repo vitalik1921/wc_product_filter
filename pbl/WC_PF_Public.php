@@ -18,13 +18,4 @@ class WC_PF_Public extends \awis_wc_pf\inc\Plugin_Public
     {
         // TODO: Implement add_enqueue_scripts() method.
     }
-
-    /**
-     * Add admin menu items
-     * @return mixed
-     */
-    function add_admin_items()
-    {
-        // TODO: Implement add_admin_items() method.
-    }
 }

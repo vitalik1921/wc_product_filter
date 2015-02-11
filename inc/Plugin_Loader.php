@@ -20,24 +20,13 @@ abstract class Plugin_Loader
     /**
      * Constructor
      * @param $plugin_dir
-     * @param $plugin_name
-     * @param $plugin_public_name
-     * @param $plugin_admin_name
-     * @param $plugin_id
-     * @param $plugin_name
-     * @param $plugin_version
      */
-    function __construct($plugin_dir, $plugin_name, $plugin_public_name, $plugin_admin_name, $plugin_id, $plugin_caption, $plugin_version)
+    function __construct($plugin_dir)
     {
         self::$plugin_dir = $plugin_dir;
 
         //init auto_loader
         spl_autoload_register(array($this, 'auto_loader'), false);
-
-        //init main objects
-        self::$plugin = new $plugin_name($plugin_id, $plugin_caption, $plugin_version);
-        self::$plugin_public = new $plugin_public_name();
-        self::$plugin_admin = new $plugin_admin_name();
     }
 
     /**
