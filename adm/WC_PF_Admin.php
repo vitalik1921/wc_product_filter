@@ -6,31 +6,68 @@ class WC_PF_Admin extends \awis_wc_pf\inc\Plugin_WC_Admin
 {
     function __construct()
     {
+        global $wpdb;
+
         $tab_id = 'wc_pf_options';
         $tab_name = 'Filters';
 
+        //bacis settings
         $settings = array(
-            'section_title' => array(
-                'name' => __( 'An example title', 'example-text-domain' ),
+            'section_general' => array(
+                'name' => 'General',
                 'type' => 'title',
                 'desc' => '',
-                'id'   => 'wc_settings_' . $tab_id . '_title'
+                'id'   => 'wc_settings_' . $tab_id . '_general'
             ),
-            'example_input' => array(
-                'name'    => __( 'Example input', 'example-text-domain' ),
-                'type'    => 'text',
-                'desc'    => __( 'This is an example field, nothing much I can say about it.', 'example-text-domain' ),
-                'id'      => 'wc_settings_' . $tab_id . '_example_input',
-                'default' => '10',
+            'enable_ajax' => array(
+                'name'    => 'Enable Ajax',
+                'type'    => 'checkbox',
+                'desc'    => 'Choose this to enable AJAX filters.',
+                'id'      => 'wc_settings_' . $tab_id . '_enable_ajax',
+                'default' => '0',
             ),
-            'section_end'   => array(
+            'show_amount' => array(
+                'name'    => 'Show amount',
+                'type'    => 'checkbox',
+                'desc'    => 'Show amount of items.',
+                'id'      => 'wc_settings_' . $tab_id . 'show_amount',
+                'default' => '0',
+            ),
+            'section_general_end'   => array(
                 'type' => 'sectionend',
-                'id'   => 'wc_settings_' . $tab_id . '_section_end'
+                'id'   => 'wc_settings_' . $tab_id . '_general_end'
             )
         );
 
+        //taxonomies
+        if ($taxonomies = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies ORDER BY attribute_name ASC")) {
+
+            $settings['section_taxonomies'] = array(
+                'name' => 'Taxonomies',
+                'type' => 'title',
+                'desc' => '',
+                'id'   => 'wc_settings_' . $tab_id . '_taxonomies'
+            );
+
+            foreach ($taxonomies as $taxonomy_object) {
+                $taxonomy_label = $taxonomy_object->attribute_label;
+                $taxonomy_id = $taxonomy_object->attribute_name;
+
+                $settings[$taxonomy_id] = array(
+                    'name'    => $taxonomy_label,
+                    'type'    => 'checkbox',
+                    'desc'    => 'Hide',
+                    'id'      => 'wc_settings_' . $tab_id . '_'.$taxonomy_id,
+                    'default' => '0',
+                );
+            }
+
+            $settings['section_taxonomies_end'] = array(
+                'type' => 'sectionend',
+                'id'   => 'wc_settings_' . $tab_id . '_taxonomies_end'
+            );
+        }
+
         parent::__construct($tab_id, $tab_name, $settings);
     }
-
-
 }

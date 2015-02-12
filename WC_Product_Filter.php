@@ -21,17 +21,15 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
      */
     function init_wc_layered_nav()
     {
-        global $_chosen_attributes, $woocommerce, $_attributes_array;
+        global $_chosen_attributes, $_attributes_array;
 
         $_chosen_attributes = $_attributes_array = array();
-
         $attribute_taxonomies = wc_get_attribute_taxonomies();
 
         if ($attribute_taxonomies) {
             foreach ($attribute_taxonomies as $tax) {
 
                 $attribute = sanitize_title($tax->attribute_name);
-
                 $taxonomy = wc_attribute_taxonomy_name($attribute);
 
                 // create an array of product attribute taxonomies
@@ -245,7 +243,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
      */
     function getCategoryTreeShortCode($atts, $content = "")
     {
-
+        $this->getCategoryTree();
     }
 
     /**
@@ -255,7 +253,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
      */
     function getAttributesTreeShortCode($atts, $content = "")
     {
-
+        $this->getAttributesTree();
     }
 
 }

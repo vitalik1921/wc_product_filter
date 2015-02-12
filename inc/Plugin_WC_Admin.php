@@ -52,4 +52,15 @@ class Plugin_WC_Admin
     {
         return apply_filters('wc_settings_tab_'.$this->tab_id, $this->settings);
     }
+
+    /**
+     * Get option by id
+     * @param $key
+     * @return mixed|void
+     */
+    public function get_option( $key ) {
+        $fields = $this->get_fields();
+
+        return apply_filters( 'wc_option_' . $key, get_option( 'wc_settings_' . $this->tab_id . '_' . $key, ( ( isset( $fields[$key] ) && isset( $fields[$key]['default'] ) ) ? $fields[$key]['default'] : '' ) ) );
+    }
 }
