@@ -11,6 +11,7 @@ abstract class Plugin_Loader
 
     /** PROTECTED   */
     static protected $plugin_dir;
+    static protected $plugin_url;
     static protected $plugin;
     static protected $plugin_public;
     static protected $plugin_admin;
@@ -20,10 +21,12 @@ abstract class Plugin_Loader
     /**
      * Constructor
      * @param $plugin_dir
+     * @param $plugin_url
      */
-    function __construct($plugin_dir)
+    function __construct($plugin_dir, $plugin_url)
     {
         self::$plugin_dir = $plugin_dir;
+        self::$plugin_url = $plugin_url;
 
         //init auto_loader
         spl_autoload_register(array($this, 'auto_loader'), false);
@@ -62,6 +65,14 @@ abstract class Plugin_Loader
     public static function getPluginDir()
     {
         return self::$plugin_dir;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getPluginUrl()
+    {
+        return self::$plugin_url;
     }
 
     /**

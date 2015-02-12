@@ -30,8 +30,15 @@ class WC_PF_Admin extends \awis_wc_pf\inc\Plugin_WC_Admin
                 'name'    => 'Show amount',
                 'type'    => 'checkbox',
                 'desc'    => 'Show amount of items.',
-                'id'      => 'wc_settings_' . $tab_id . 'show_amount',
+                'id'      => 'wc_settings_' . $tab_id . '_show_amount',
                 'default' => '0',
+            ),
+            'disable_empty' => array(
+                'name'    => 'Disable empty',
+                'type'    => 'checkbox',
+                'desc'    => 'Make term unclickable if it doesn\'t have items.',
+                'id'      => 'wc_settings_' . $tab_id . '_disable_empty',
+                'default' => '1',
             ),
             'section_general_end'   => array(
                 'type' => 'sectionend',

@@ -12,13 +12,13 @@ require_once('inc/Plugin_Loader.php');
 
 class WC_PF_Loader extends \awis_wc_pf\inc\Plugin_Loader
 {
-    function __construct($plugin_dir)
+    function __construct($plugin_dir, $plugin_url)
     {
-        parent::__construct($plugin_dir);
+        parent::__construct($plugin_dir, $plugin_url);
 
+        self::$plugin_admin = new \awis_wc_pf\adm\WC_PF_Admin();
         self::$plugin = new \awis_wc_pf\WC_Product_Filter(0, 'WC Product Filter', '1.0.0');
         self::$plugin_public = new \awis_wc_pf\pbl\WC_PF_Public();
-        self::$plugin_admin = new \awis_wc_pf\adm\WC_PF_Admin();
     }
 
     /**
@@ -40,7 +40,7 @@ class WC_PF_Loader extends \awis_wc_pf\inc\Plugin_Loader
     }
 }
 
-$wc_pf_loader = new WC_PF_Loader(plugin_dir_path(__FILE__));
+$wc_pf_loader = new WC_PF_Loader(plugin_dir_path(__FILE__), plugin_dir_url(__FILE__));
 
 //register WP hooks
 register_activation_hook(__FILE__, array($wc_pf_loader, 'activation'));

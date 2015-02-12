@@ -1,0 +1,5 @@
+.wc-pf-loading {
+    background: url("../img/ajax-loader.gif") 50% 50% no-repeat;
+    opacity: 0.3;
+    filter: alpha(opacity=30);
+}

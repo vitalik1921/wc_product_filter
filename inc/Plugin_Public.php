@@ -12,7 +12,7 @@ abstract class Plugin_Public
         }
 
         //add plugin styles/scripts
-        add_action('admin_enqueue_scripts', array($this, 'add_enqueue_scripts'));
+        add_action('wp_enqueue_scripts', array($this, 'add_enqueue_scripts'));
     }
 
     /**

@@ -93,16 +93,24 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
 
         //we are getting taxonomies
         if ($taxonomies = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies ORDER BY attribute_name ASC")) {
-            $result .= "<ul>";
+            $result .= "<ul id='wc_pf_attributes'>";
         } else {
             return '';
         }
 
         foreach ($taxonomies as $taxonomy_object) {
 
+
             $taxonomy = $taxonomy_object->attribute_name;
 
-            $result .= "<li class='taxonomy'>$taxonomy</li>";
+            //is it hidden?
+            $is_hidden = \awis_wc_pf\adm\WC_PF_Admin::get_option($taxonomy);
+
+            if ($is_hidden == 'yes') {
+                continue;
+            }
+
+            $result .= "<li class='taxonomy'>{$taxonomy_object->attribute_label}</li>";
 
             //we are creating array with query options
             $get_terms_args = array('hide_empty' => '1');
@@ -225,8 +233,21 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                     if ($query_type == 'or' && !(sizeof($current_filter) == 1 && isset($_chosen_attributes['pa_' . $taxonomy]['terms']) && is_array($_chosen_attributes['pa_' . $taxonomy]['terms']) && in_array($term->term_id, $_chosen_attributes['pa_' . $taxonomy]['terms'])))
                         $link = add_query_arg('query_type_' . $taxonomy, 'or', $link);
 
+                    $amount = '';
 
-                    $result .= "<li data-count='$count' $class><a href='$link'>{$term->name}</a></li>";
+                    $show_amounts = \awis_wc_pf\adm\WC_PF_Admin::get_option('show_amount');
+                    if ($show_amounts == 'yes') {
+                        $amount = " <span class='amount'>($count)</span>";
+                    }
+
+                    $style = '';
+
+                    $disable_empty = \awis_wc_pf\adm\WC_PF_Admin::get_option('disable_empty');
+                    if (($disable_empty == 'yes') && ($count == 0)) {
+                        $style = " style='pointer-events: none;'";
+                    }
+
+                    $result .= "<li data-count='$count' $class $style><a href='$link'>{$term->name}$amount</a></li>";
                 }
             }
         }
