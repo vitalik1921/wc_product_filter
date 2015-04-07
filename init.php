@@ -1,6 +1,11 @@
 <?php
+
 /**
  * Plugin Name: WC Product Filter
+ * Plugin URI: http://site-builder.in.ua
+ * Version: 1.0
+ * Author: Vitaliy Shebela
+ * Author URI: http://site-builder.in.ua
  */
 
 namespace awis_wc_pf;
