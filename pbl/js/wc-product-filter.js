@@ -8,7 +8,7 @@ jQuery(document).ready(function ($) {
     var pagination = $(pagination_selector);
 
     //AJAX for term links
-    wc_pr_attr.on('click', 'li > a', function (e) {
+    wc_pr_attr.on('click', 'li.term > a', function (e) {
         e.preventDefault();
 
         var href = $(this).attr('href');
@@ -25,13 +25,13 @@ jQuery(document).ready(function ($) {
                 products.removeClass('wc-pf-loading');
 
                 wc_pr_attr.empty();
-                wc_pr_attr.html($(data).find(wc_pr_attr_selector));
+                wc_pr_attr.html($(data).find(wc_pr_attr_selector).html());
 
                 products.empty();
-                products.html($(data).find(products_selector));
+                products.html($(data).find(products_selector).html());
 
                 pagination.empty();
-                pagination.html($(data).find(pagination_selector));
+                pagination.html($(data).find(pagination_selector).html());
 
                 //update browser history (IE doesn't support it)
                 if (!navigator.userAgent.match(/msie/i)) {

@@ -110,7 +110,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                 continue;
             }
 
-            $result .= "<li class='taxonomy'>{$taxonomy_object->attribute_label}</li>";
+            $result .= "<li class='taxonomy'><span class='caption'>{$taxonomy_object->attribute_label}</span>";
 
             //we are creating array with query options
             $get_terms_args = array('hide_empty' => '1');
@@ -132,8 +132,12 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                     break;
             }
 
+            $get_terms_args = apply_filters('awis_wc_pf_query_args', $get_terms_args);
+
             //we are getting taxonomy terms
             if ($terms = get_terms('pa_' . $taxonomy, $get_terms_args)) {
+
+                $result .= '<ul>';
 
                 foreach ($terms as $term) {
 
@@ -209,7 +213,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                     // Current Filter
                     if (isset($_chosen_attributes['pa_' . $taxonomy]) && is_array($_chosen_attributes['pa_' . $taxonomy]['terms']) && in_array($term->term_id, $_chosen_attributes['pa_' . $taxonomy]['terms'])) {
 
-                        $class = 'class="chosen"';
+                        $class = 'class="term chosen"';
                         // Remove this term is $current_filter has more than 1 term filtered
                         if (sizeof($current_filter) > 1) {
                             $current_filter_without_this = array_diff($current_filter, array($term->term_id));
@@ -217,7 +221,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                         }
 
                     } else {
-                        $class = '';
+                        $class = 'class="term"';
                         $link = add_query_arg($arg, implode(',', $current_filter), $link);
                     }
 
@@ -249,7 +253,11 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
 
                     $result .= "<li data-count='$count' $class $style><a href='$link'>{$term->name}$amount</a></li>";
                 }
+
+                $result .= '</ul>';
             }
+
+            $result .= '</li>';
         }
 
         $result .= "</ul>";
