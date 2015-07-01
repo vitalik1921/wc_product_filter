@@ -213,7 +213,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                     // Current Filter
                     if (isset($_chosen_attributes['pa_' . $taxonomy]) && is_array($_chosen_attributes['pa_' . $taxonomy]['terms']) && in_array($term->term_id, $_chosen_attributes['pa_' . $taxonomy]['terms'])) {
 
-                        $class = 'class="term chosen"';
+                        $class = 'term chosen';
                         // Remove this term is $current_filter has more than 1 term filtered
                         if (sizeof($current_filter) > 1) {
                             $current_filter_without_this = array_diff($current_filter, array($term->term_id));
@@ -221,7 +221,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                         }
 
                     } else {
-                        $class = 'class="term"';
+                        $class = 'term';
                         $link = add_query_arg($arg, implode(',', $current_filter), $link);
                     }
 
@@ -251,7 +251,8 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
                         $style = " style='pointer-events: none;'";
                     }
 
-                    $result .= "<li data-count='$count' $class $style><a href='$link'>{$term->name}$amount</a></li>";
+                    $class .= ' '.$term->slug;
+                    $result .= "<li data-count='$count' class='$class' $style><a href='$link'>{$term->name}$amount</a></li>";
                 }
 
                 $result .= '</ul>';
