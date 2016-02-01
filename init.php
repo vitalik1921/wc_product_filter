@@ -50,3 +50,15 @@ $wc_pf_loader = new WC_PF_Loader(plugin_dir_path(__FILE__), plugin_dir_url(__FIL
 //register WP hooks
 register_activation_hook(__FILE__, array($wc_pf_loader, 'activation'));
 register_deactivation_hook(__FILE__, array($wc_pf_loader, 'deactivation'));
+
+//global functions
+function wc_pf_get_attributes_tree($echo=false) {
+    $product_filter = WC_PF_Loader::getPlugin();
+
+    if ($echo) {
+        echo $product_filter->getAttributesTree();
+        return true;
+    } else {
+        return $product_filter->getAttributesTree();
+    }
+}

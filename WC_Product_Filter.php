@@ -60,8 +60,8 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
      */
     function initShortCodes()
     {
-        //Add category tree ShortCode
-        add_shortcode('wc_pf_cats', array($this, 'getCategoryTreeShortCode'));
+//        //Add category tree ShortCode
+//        add_shortcode('wc_pf_cats', array($this, 'getCategoryTreeShortCode'));
 
         //Add attributes tree ShortCode
         add_shortcode('wc_pf_attrs', array($this, 'getAttributesTreeShortCode'));
@@ -72,7 +72,7 @@ class WC_Product_Filter extends \awis_wc_pf\inc\Plugin
      */
     function getCategoryTree()
     {
-        global $_chosen_attributes;
+        return false;
     }
 
     /**
