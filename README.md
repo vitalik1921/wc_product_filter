@@ -1,5 +1,5 @@
 # WC Products Filter
-This plugin for developers. It renders product attributes filter (it is possible to use AJAX).
+This is WordPress plugin for developers. It renders product attributes filter (it is possible to use AJAX).
 
 ## Installation
 1. Copy to 'plugins' folder
@@ -16,20 +16,20 @@ This plugin for developers. It renders product attributes filter (it is possible
 * Vitaliy Shebela (vitalik.privat@gmail.com)
 
 ## License
-This file is part of Deployer.
+This file is part of WC Products Filter.
 
-Deployer is free software: you can redistribute it and/or modify
+WC Products Filter is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Deployer is distributed in the hope that it will be useful,
+WC Products Filter is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Deployer.  If not, see <http://www.gnu.org/licenses/>.
+along with WC Products Filter.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
